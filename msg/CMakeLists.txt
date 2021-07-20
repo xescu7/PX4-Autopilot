@@ -76,6 +76,8 @@ set(msg_files
 	estimator_status_flags.msg
 	event.msg
 	follow_target.msg
+	follow_target_estimator.msg
+	follow_target_status.msg
 	failure_detector_status.msg
 	generator_status.msg
 	geofence_result.msg

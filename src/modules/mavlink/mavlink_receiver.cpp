@@ -2427,7 +2427,6 @@ MavlinkReceiver::handle_message_follow_target(mavlink_message_t *msg)
 	follow_target_topic.vx = follow_target_msg.vel[0];
 	follow_target_topic.vy = follow_target_msg.vel[1];
 	follow_target_topic.vz = follow_target_msg.vel[2];
-
 	_follow_target_pub.publish(follow_target_topic);
 }
 

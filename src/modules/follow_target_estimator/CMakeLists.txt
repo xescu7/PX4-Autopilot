@@ -1,6 +1,6 @@
 ############################################################################
 #
-#   Copyright (c) 2015 PX4 Development Team. All rights reserved.
+#   Copyright (c) 2018 PX4 Development Team. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -31,29 +31,13 @@
 #
 ############################################################################
 
-add_subdirectory(GeofenceBreachAvoidance)
-
 px4_add_module(
-	MODULE modules__navigator
-	MAIN navigator
+	MODULE modules__follow_target_estimator
+	MAIN follow_target_estimator
+	COMPILE_FLAGS
 	SRCS
-		navigator_main.cpp
-		navigator_mode.cpp
-		mission_block.cpp
-		mission.cpp
-		loiter.cpp
-		rtl.cpp
-		takeoff.cpp
-		land.cpp
-		precland.cpp
-		mission_feasibility_checker.cpp
-		geofence.cpp
-		enginefailure.cpp
+		follow_target_estimator_main.cpp
+		TargetEstimator.cpp
 	DEPENDS
-		geo
-		landing_slope
-		geofence_breach_avoidance
-		motion_planning
 	)
 
-px4_add_functional_gtest(SRC RangeRTLTest.cpp LINKLIBS modules__navigator modules__dataman)

@@ -42,7 +42,6 @@
 #pragma once
 
 #include "enginefailure.h"
-#include "follow_target.h"
 #include "geofence.h"
 #include "land.h"
 #include "precland.h"
@@ -85,7 +84,7 @@ using namespace time_literals;
 /**
  * Number of navigation modes that need on_active/on_inactive calls
  */
-#define NAVIGATOR_MODE_ARRAY_SIZE 8
+#define NAVIGATOR_MODE_ARRAY_SIZE 7
 
 class Navigator : public ModuleBase<Navigator>, public ModuleParams
 {
@@ -401,7 +400,6 @@ private:
 	PrecLand	_precland;			/**< class for handling precision land commands */
 	RTL 		_rtl;				/**< class that handles RTL */
 	EngineFailure	_engineFailure;			/**< class that handles the engine failure mode (FW only!) */
-	FollowTarget	_follow_target;
 
 	NavigatorMode *_navigation_mode_array[NAVIGATOR_MODE_ARRAY_SIZE];	/**< array of navigation modes */
 

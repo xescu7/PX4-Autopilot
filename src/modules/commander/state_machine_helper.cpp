@@ -679,7 +679,22 @@ bool set_nav_state(vehicle_status_s &status, actuator_armed_s &armed, commander_
 		} else if (is_armed && check_invalid_pos_nav_state(status, old_failsafe, mavlink_log_pub, status_flags, false, true)) {
 			// nothing to do - everything done in check_invalid_pos_nav_state
 
+		} else if (status.data_link_lost && data_link_loss_act_configured && !landed && is_armed) {
+			// failsafe: datalink is lost
+			// Trigger RTL
+			set_link_loss_nav_state(status, armed, status_flags, internal_state, data_link_loss_act, 0);
+
+			enable_failsafe(status, old_failsafe, mavlink_log_pub, event_failsafe_reason_t::no_datalink);
+
+		} else if (status.rc_signal_lost && !data_link_loss_act_configured && is_armed) {
+			// failsafe: RC is lost, datalink loss is not set up and rc loss is not disabled
+			// Trigger RTL
+			enable_failsafe(status, old_failsafe, mavlink_log_pub, event_failsafe_reason_t::no_rc);
+
+			set_link_loss_nav_state(status, armed, status_flags, internal_state, rc_loss_act, 0);
+
 		} else {
+			// no failsafe, RC is not mandatory for follow_target
 			status.nav_state = vehicle_status_s::NAVIGATION_STATE_AUTO_FOLLOW_TARGET;
 		}
 

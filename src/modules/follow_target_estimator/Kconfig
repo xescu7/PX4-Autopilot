@@ -1,0 +1,5 @@
+menuconfig MODULES_FOLLOW_TARGET_ESTIMATOR
+	bool "follow_target_estimator"
+	default n
+	---help---
+		Enable support for follow target estimator
