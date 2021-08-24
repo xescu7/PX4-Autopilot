@@ -157,10 +157,6 @@ bool FlightTaskAuto::update()
 		_prepareTakeoffSetpoints();
 		break;
 
-	case WaypointType::velocity:
-		_prepareVelocitySetpoints();
-		break;
-
 	default:
 		_preparePositionSetpoints();
 		break;
@@ -366,17 +362,17 @@ bool FlightTaskAuto::_evaluateTriplets()
 
 	if (triplet_update || (_current_state != previous_state) || _current_state == State::offtrack) {
 		_updateInternalWaypoints();
-		_mission_gear = _sub_triplet_setpoint.get().current.landing_gear;
 		_yaw_lock = false;
 	}
 
 	if (_param_com_obs_avoid.get()
 	    && _sub_vehicle_status.get().vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+
 		_obstacle_avoidance.updateAvoidanceDesiredWaypoints(_triplet_target, _yaw_setpoint, _yawspeed_setpoint,
-				_triplet_next_wp,
-				_sub_triplet_setpoint.get().next.yaw,
-				_sub_triplet_setpoint.get().next.yawspeed_valid ? _sub_triplet_setpoint.get().next.yawspeed : (float)NAN,
-				_ext_yaw_handler != nullptr && _ext_yaw_handler->is_active(), _sub_triplet_setpoint.get().current.type);
+				_triplet_next_wp, _sub_triplet_setpoint.get().next.yaw, NAN,
+				(_ext_yaw_handler != nullptr && _ext_yaw_handler->is_active()),
+				_sub_triplet_setpoint.get().current.type);
+
 		_obstacle_avoidance.checkAvoidanceProgress(_position, _triplet_prev_wp, _target_acceptance_radius, _closest_pt);
 	}
 
@@ -393,12 +389,6 @@ bool FlightTaskAuto::_evaluateTriplets()
 		} else {
 			_yawspeed_setpoint = _ext_yaw_handler->get_weathervane_yawrate();
 		}
-
-
-
-	} else if (_type == WaypointType::follow_target && _sub_triplet_setpoint.get().current.yawspeed_valid) {
-		_yawspeed_setpoint = _sub_triplet_setpoint.get().current.yawspeed;
-		_yaw_setpoint = NAN;
 
 	} else {
 		if ((_type != WaypointType::takeoff || _sub_triplet_setpoint.get().current.disable_weather_vane)
@@ -511,23 +501,6 @@ bool FlightTaskAuto::_evaluateGlobalReference()
 
 	// check if everything is still finite
 	return PX4_ISFINITE(_reference_altitude) && PX4_ISFINITE(ref_lat) && PX4_ISFINITE(ref_lon);
-}
-
-Vector2f FlightTaskAuto::_getTargetVelocityXY()
-{
-	// guard against any bad velocity values
-	const float vx = _sub_triplet_setpoint.get().current.vx;
-	const float vy = _sub_triplet_setpoint.get().current.vy;
-	bool velocity_valid = PX4_ISFINITE(vx) && PX4_ISFINITE(vy) &&
-			      _sub_triplet_setpoint.get().current.velocity_valid;
-
-	if (velocity_valid) {
-		return Vector2f(vx, vy);
-
-	} else {
-		// just return zero speed
-		return Vector2f{};
-	}
 }
 
 State FlightTaskAuto::_getCurrentState()
@@ -839,15 +812,6 @@ void FlightTaskAuto::_prepareTakeoffSetpoints()
 	_velocity_setpoint = Vector3f(NAN, NAN, NAN);
 
 	_gear.landing_gear = landing_gear_s::GEAR_DOWN;
-}
-
-void FlightTaskAuto::_prepareVelocitySetpoints()
-{
-	// XY Velocity waypoint
-	// TODO : Rewiew that. What is the expected behavior?
-	_position_setpoint = Vector3f(NAN, NAN, _position(2));
-	Vector2f vel_sp_xy = Vector2f(_velocity).unit_or_zero() * _mc_cruise_speed;
-	_velocity_setpoint = Vector3f(vel_sp_xy(0), vel_sp_xy(1), NAN);
 }
 
 void FlightTaskAuto::_preparePositionSetpoints()

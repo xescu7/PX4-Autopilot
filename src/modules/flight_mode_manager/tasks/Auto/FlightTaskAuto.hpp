@@ -66,12 +66,10 @@
  */
 enum class WaypointType : int {
 	position = position_setpoint_s::SETPOINT_TYPE_POSITION,
-	velocity = position_setpoint_s::SETPOINT_TYPE_VELOCITY,
 	loiter = position_setpoint_s::SETPOINT_TYPE_LOITER,
 	takeoff = position_setpoint_s::SETPOINT_TYPE_TAKEOFF,
 	land = position_setpoint_s::SETPOINT_TYPE_LAND,
 	idle = position_setpoint_s::SETPOINT_TYPE_IDLE,
-	follow_target = position_setpoint_s::SETPOINT_TYPE_FOLLOW_TARGET,
 };
 
 enum class State {
@@ -99,7 +97,6 @@ public:
 	void setYawHandler(WeatherVane *ext_yaw_handler) override {_ext_yaw_handler = ext_yaw_handler;}
 
 protected:
-	matrix::Vector2f _getTargetVelocityXY(); /**< only used for follow-me and only here because of legacy reason.*/
 	void _updateInternalWaypoints(); /**< Depending on state of vehicle, the internal waypoints might differ from target (for instance if offtrack). */
 	bool _compute_heading_from_2D_vector(float &heading, matrix::Vector2f v); /**< Computes and sets heading a 2D vector */
 
@@ -122,7 +119,6 @@ protected:
 
 	void _prepareIdleSetpoints();
 	void _prepareLandSetpoints();
-	void _prepareVelocitySetpoints();
 	void _prepareTakeoffSetpoints();
 	void _preparePositionSetpoints();
 	bool _highEnoughForLandingGear(); /**< Checks if gears can be lowered. */
@@ -143,7 +139,6 @@ protected:
 
 	State _current_state{State::none};
 	float _target_acceptance_radius{0.0f}; /**< Acceptances radius of the target */
-	int _mission_gear{landing_gear_s::GEAR_KEEP};
 
 	float _yaw_sp_prev{NAN};
 	AlphaFilter<float> _yawspeed_filter;
