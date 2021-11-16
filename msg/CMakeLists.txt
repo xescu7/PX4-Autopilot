@@ -107,7 +107,6 @@ set(msg_files
 	manual_control_switches.msg
 	mavlink_log.msg
 	mission.msg
-	mission_checksum.msg
 	mission_result.msg
 	mount_orientation.msg
 	navigator_mission_item.msg
