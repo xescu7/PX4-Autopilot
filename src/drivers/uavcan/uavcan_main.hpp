@@ -94,8 +94,6 @@
 #include <uavcan_posix/firmware_version_checker.hpp>
 #include <uavcan/equipment/esc/RawCommand.hpp>
 #include <uavcan/equipment/indication/BeepCommand.hpp>
-#include <uavcan/protocol/enumeration/Begin.hpp>
-#include <uavcan/protocol/enumeration/Indication.hpp>
 
 using namespace time_literals;
 
@@ -190,7 +188,6 @@ class UavcanNode : public cdev::CDev, public px4::ScheduledWorkItem, public Modu
 
 public:
 	typedef UAVCAN_DRIVER::CanInitHelper<RxQueueLenPerIface> CanInitHelper;
-	enum eServerAction : int {None, Start, Stop, CheckFW, Busy};
 
 	UavcanNode(uavcan::ICanDriver &can_driver, uavcan::ISystemClock &system_clock);
 
@@ -202,17 +199,15 @@ public:
 
 	uavcan::Node<>	&get_node() { return _node; }
 
-	int		teardown();
-
 	void		print_info();
 
 	void		shrink();
 
-	void		hardpoint_controller_set(uint8_t hardpoint_id, uint16_t command);
-
 	static UavcanNode	*instance() { return _instance; }
 	static int		 getHardwareVersion(uavcan::protocol::HardwareVersion &hwver);
-	int			 fw_server(eServerAction action);
+
+	void requestCheckAllNodesFirmwareAndUpdate() { _check_fw = true; }
+
 	int			 list_params(int remote_node_id);
 	int			 save_params(int remote_node_id);
 	int			 set_param(int remote_node_id, const char *name, char *value);
@@ -225,17 +220,8 @@ protected:
 	void Run() override;
 private:
 
-	static constexpr float BeepFrequencyGenericIndication       = 1000.0F;
-	static constexpr float BeepFrequencySuccess                 = 2000.0F;
-	static constexpr float BeepFrequencyError                   = 100.0F;
-
-
 	void		fill_node_info();
 	int		init(uavcan::NodeID node_id, UAVCAN_DRIVER::BusEvent &bus_events);
-
-	int		start_fw_server();
-	int		stop_fw_server();
-	int		request_fw_check();
 
 	int		print_params(uavcan::protocol::param::GetSet::Response &resp);
 	int		get_set_param(int nodeid, const char *name, uavcan::protocol::param::GetSet::Request &req);
@@ -247,7 +233,6 @@ private:
 	void enable_idle_throttle_when_armed(bool value);
 
 	px4::atomic_bool	_task_should_exit{false};	///< flag to indicate to tear down the CAN driver
-	px4::atomic<int>	_fw_server_action{None};
 	int			 _fw_server_status{-1};
 
 	bool			_is_armed{false};		///< the arming status of the actuators on the bus
@@ -260,7 +245,7 @@ private:
 
 	uavcan::Node<>			_node;				///< library instance
 	pthread_mutex_t			_node_mutex;
-	px4_sem_t			_server_command_sem;
+
 	UavcanEscController		_esc_controller;
 	UavcanServoController		_servo_controller;
 	UavcanMixingInterfaceESC 	_mixing_interface_esc{_node_mutex, _esc_controller};
@@ -300,8 +285,6 @@ private:
 	RestartNodeCallback;
 
 	void cb_setget(const uavcan::ServiceCallResult<uavcan::protocol::param::GetSet> &result);
-
-	void requestCheckAllNodesFirmwareAndUpdate() { _check_fw = true; }
 
 	bool guessIfAllDynamicNodesAreAllocated() { return _server_instance.guessIfAllDynamicNodesAreAllocated(); }
 
@@ -369,34 +352,7 @@ private:
 	void clear_node_params_dirty(uint8_t node_id) { _param_dirty_bitmap[node_id >> 5] &= ~(1 << (node_id & 31)); }
 	bool are_node_params_dirty(uint8_t node_id) const { return bool((_param_dirty_bitmap[node_id >> 5] >> (node_id & 31)) & 1); }
 
-	void beep(float frequency);
-
-	bool _mutex_inited = false;
-	volatile bool _check_fw = false;
-
-	// ESC enumeration
-	bool _esc_enumeration_active = false;
-	uint8_t _esc_enumeration_ids[uavcan::equipment::esc::RawCommand::FieldTypes::cmd::MaxSize];
-	uint8_t _esc_enumeration_index = 0;
-	uint8_t _esc_count = 0;
-
-	typedef uavcan::MethodBinder<UavcanNode *,
-		void (UavcanNode::*)(const uavcan::ServiceCallResult<uavcan::protocol::enumeration::Begin> &)>
-		EnumerationBeginCallback;
-	typedef uavcan::MethodBinder<UavcanNode *,
-		void (UavcanNode::*)(const uavcan::ReceivedDataStructure<uavcan::protocol::enumeration::Indication>&)>
-		EnumerationIndicationCallback;
-	void cb_enumeration_begin(const uavcan::ServiceCallResult<uavcan::protocol::enumeration::Begin> &result);
-	void cb_enumeration_indication(const uavcan::ReceivedDataStructure<uavcan::protocol::enumeration::Indication> &msg);
-	void cb_enumeration_getset(const uavcan::ServiceCallResult<uavcan::protocol::param::GetSet> &result);
-	void cb_enumeration_save(const uavcan::ServiceCallResult<uavcan::protocol::param::ExecuteOpcode> &result);
-
-	uavcan::Publisher<uavcan::equipment::indication::BeepCommand> _beep_pub;
-	uavcan::Subscriber<uavcan::protocol::enumeration::Indication, EnumerationIndicationCallback>
-	_enumeration_indication_sub;
-	uavcan::ServiceClient<uavcan::protocol::enumeration::Begin, EnumerationBeginCallback> _enumeration_client;
-	uavcan::ServiceClient<uavcan::protocol::param::GetSet, GetSetCallback> _enumeration_getset_client;
-	uavcan::ServiceClient<uavcan::protocol::param::ExecuteOpcode, ExecuteOpcodeCallback> _enumeration_save_client;
+	volatile bool _check_fw{false};
 
 	void unpackFwFromROMFS(const char *sd_path, const char *romfs_path);
 	void migrateFWFromRoot(const char *sd_path, const char *sd_root_path);
