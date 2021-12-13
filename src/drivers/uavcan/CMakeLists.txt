@@ -142,7 +142,6 @@ px4_add_module(
 
 		# Main
 		uavcan_main.cpp
-		uavcan_servers.cpp
 
 		# Actuators
 		actuators/esc.cpp
