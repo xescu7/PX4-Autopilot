@@ -16,6 +16,7 @@ set -e
 INSTALL_NUTTX="true"
 INSTALL_SIM="true"
 INSTALL_ARCH=`uname -m`
+INSTALL_RTPS="false"
 
 # Parse arguments
 for arg in "$@"
@@ -28,19 +29,11 @@ do
 		INSTALL_SIM="false"
 	fi
 
-done
+	if [[ $arg == "--with-rtps" ]]; then
+		INSTALL_RTPS="true"
+	fi
 
-# detect if running in docker
-if [ -f /.dockerenv ]; then
-	echo "Running within docker, installing initial dependencies";
-	apt-get --quiet -y update && DEBIAN_FRONTEND=noninteractive apt-get --quiet -y install \
-		ca-certificates \
-		gnupg \
-		lsb-core \
-		sudo \
-		wget \
-		;
-fi
+done
 
 # script directory
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
@@ -99,6 +92,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get -y --quiet --no-install-recommends i
 	shellcheck \
 	unzip \
 	zip \
+  libssl-dev \
 	;
 
 if [[ "${UBUNTU_RELEASE}" == "16.04" ]]; then
@@ -194,6 +188,57 @@ if [[ $INSTALL_NUTTX == "true" ]]; then
 	fi
 fi
 
+# Install JAVA for SITL or FastRTPS
+if [[ $INSTALL_RTPS == "true" || $INSTALL_SIM == "true" ]]; then
+  if [[ "${UBUNTU_RELEASE}" == "18.04" ]]; then
+		java_version=11
+	else
+		java_version=14
+	fi
+
+  wget -O /tmp/jdk-public-key https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public \
+    && gpg --no-default-keyring --keyring /tmp/adoptopenjdk-keyring.gpg --import /tmp/jdk-public-key \
+    && gpg --no-default-keyring --keyring /tmp/adoptopenjdk-keyring.gpg --export --output /tmp/adoptopenjdk-archive-keyring.gpg \
+    && rm /tmp/adoptopenjdk-keyring.gpg \
+    && mv /tmp/adoptopenjdk-archive-keyring.gpg /usr/share/keyrings \
+    && echo "deb [signed-by=/usr/share/keyrings/adoptopenjdk-archive-keyring.gpg] https://adoptopenjdk.jfrog.io/adoptopenjdk/deb focal main" | sudo tee /etc/apt/sources.list.d/adoptopenjdk.list
+
+  sudo DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y --quiet --no-install-recommends install \
+    adoptopenjdk-$java_version-hotspot
+fi
+
+# Fast-RTPS
+if [[ $INSTALL_RTPS == "true" ]]; then
+
+  wget -O /tmp/gradle-6.4.1-bin.zip https://services.gradle.org/distributions/gradle-6.4.1-bin.zip \
+    && unzip -d /opt/gradle /tmp/gradle-6.4.1-bin.zip
+  export PATH="$PATH:/opt/gradle/gradle-6.4.1/bin"
+
+  # Intall foonathan_memory from source as it is required to Fast-RTPS >= 1.9
+  git clone https://github.com/eProsima/foonathan_memory_vendor.git /tmp/foonathan_memory \
+    && cd /tmp/foonathan_memory \
+    && mkdir build && cd build \
+    && cmake .. \
+    && cmake --build . --target install -- -j $(nproc)
+
+  # Fast-DDS (Fast-RTPS 2.0.0)
+  git clone --recursive https://github.com/eProsima/Fast-DDS.git -b v2.0.2 /tmp/FastRTPS-2.0.2 \
+    && cd /tmp/FastRTPS-2.0.2 \
+    && mkdir build && cd build \
+    && cmake -DTHIRDPARTY=ON -DSECURITY=ON .. \
+    && cmake --build . --target install -- -j $(nproc)
+
+  # Fast-RTPS-Gen 1.0.4
+  git clone --recursive https://github.com/eProsima/Fast-DDS-Gen.git -b v1.0.4 /tmp/Fast-RTPS-Gen-1.0.4 \
+    && cd /tmp/Fast-RTPS-Gen-1.0.4 \
+    && gradle assemble \
+    && gradle install
+
+  # cleanup installation
+  rm -rf /tmp/*
+
+fi
+
 # Simulation tools
 if [[ $INSTALL_SIM == "true" ]]; then
 
@@ -209,7 +254,7 @@ if [[ $INSTALL_SIM == "true" ]]; then
 		java_version=11
 		gazebo_version=9
 	elif [[ "${UBUNTU_RELEASE}" == "20.04" ]]; then
-		java_version=13
+		java_version=14
 		gazebo_version=11
 	else
 		java_version=14
@@ -218,13 +263,7 @@ if [[ $INSTALL_SIM == "true" ]]; then
 	# Java (jmavsim or fastrtps)
 	sudo DEBIAN_FRONTEND=noninteractive apt-get -y --quiet --no-install-recommends install \
 		ant \
-		openjdk-$java_version-jre \
-		openjdk-$java_version-jdk \
-		libvecmath-java \
-		;
-
-	# Set Java 11 as default
-	sudo update-alternatives --set java $(update-alternatives --list java | grep "java-$java_version")
+		libvecmath-java
 
 	# Gazebo
 	sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
