@@ -828,6 +828,11 @@ void FlightTaskAuto::_updateTrajConstraints()
 	} else { // down
 		_position_smoothing.setMaxAccelerationZ(_param_mpc_acc_down_max.get());
 		_position_smoothing.setMaxVelocityZ(_param_mpc_z_vel_max_dn.get());
+
+		// When the feedforward is close to the saturation of the controller, increase the saturation
+		// to allow for some additional control effort from the position loop
+		const float min_saturation_req = 1.2f * _position_smoothing.getCurrentVelocityZ();
+		_constraints.speed_down = math::max(_constraints.speed_down, min_saturation_req);
 	}
 }
 
