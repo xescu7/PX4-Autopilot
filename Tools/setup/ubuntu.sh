@@ -2,16 +2,15 @@
 
 set -e
 
-## Bash script to setup PX4 development environment on Ubuntu LTS (20.04, 18.04, 16.04).
+## Bash script to setup PX4 development environment on Ubuntu LTS (20.04, 18.04).
 ## Can also be used in docker.
 ##
 ## Installs:
 ## - Common dependencies and tools for nuttx, jMAVSim, Gazebo
 ## - NuttX toolchain (omit with arg: --no-nuttx)
 ## - jMAVSim and Gazebo9 simulator (omit with arg: --no-sim-tools)
-##
-## Not Installs:
-## - FastRTPS and FastCDR
+## Optional:
+## - FastRTPS and FastCDR (with args: --with-rtps)
 
 INSTALL_NUTTX="true"
 INSTALL_SIM="true"
@@ -94,12 +93,6 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get -y --quiet --no-install-recommends i
 	zip \
 	libssl-dev \
 	;
-
-if [[ "${UBUNTU_RELEASE}" == "16.04" ]]; then
-	echo "Installing Ubuntu 16.04 PX4-compatible ccache version"
-	wget -O /tmp/ccache_3.4.1-1_amd64.deb http://launchpadlibrarian.net/356662933/ccache_3.4.1-1_amd64.deb
-	sudo dpkg -i /tmp/ccache_3.4.1-1_amd64.deb
-fi
 
 # Python3 dependencies
 echo
@@ -192,7 +185,7 @@ fi
 if [[ $INSTALL_RTPS == "true" || $INSTALL_SIM == "true" ]]; then
   if [[ "${UBUNTU_RELEASE}" == "18.04" ]]; then
 		java_version=11
-	else
+  elif [[ "${UBUNTU_RELEASE}" == "20.04" ]]; then
 		java_version=14
 	fi
 
@@ -235,7 +228,10 @@ if [[ $INSTALL_RTPS == "true" ]]; then
     && gradle install
 
   # cleanup installation
-  rm -rf /tmp/*
+  rm /tmp/gradle-6.4.1-bin.zip
+  rm -rf /tmp/foonathan_memory
+  rm -rf /tmp/FastRTPS-2.0.2
+  rm -rf /tmp/Fast-RTPS-Gen-1.0.4
 
 fi
 
@@ -251,15 +247,11 @@ if [[ $INSTALL_SIM == "true" ]]; then
 		;
 
 	if [[ "${UBUNTU_RELEASE}" == "18.04" ]]; then
-		java_version=11
 		gazebo_version=9
 	elif [[ "${UBUNTU_RELEASE}" == "20.04" ]]; then
-		java_version=14
-		gazebo_version=11
-	else
-		java_version=14
 		gazebo_version=11
 	fi
+
 	# Java (jmavsim or fastrtps)
 	sudo DEBIAN_FRONTEND=noninteractive apt-get -y --quiet --no-install-recommends install \
 		ant \
