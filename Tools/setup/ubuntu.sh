@@ -92,7 +92,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get -y --quiet --no-install-recommends i
 	shellcheck \
 	unzip \
 	zip \
-  libssl-dev \
+	libssl-dev \
 	;
 
 if [[ "${UBUNTU_RELEASE}" == "16.04" ]]; then
