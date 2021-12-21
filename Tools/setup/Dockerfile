@@ -44,7 +44,7 @@ EXPOSE 14556/udp
 EXPOSE 14557/udp
 
 # create and start as LOCAL_USER_ID
-COPY containers/scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY Tools/setup/entrypoint.sh /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 CMD ["/bin/bash"]
