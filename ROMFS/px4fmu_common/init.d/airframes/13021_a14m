@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# @name AldoraTech A14M
+#
+# @type VTOL Tiltrotor
+# @class VTOL
+#
+# @maintainer Francesc Viaplana
+#
+# @output MAIN1 motor 1
+# @output MAIN2 motor 2
+# @output MAIN3 motor 3
+# @output MAIN4 motor 4
+# @output MAIN5 Rudder
+# @output AUX1 Motor tilt front left
+# @output AUX2 Motor tilt front right
+# @output AUX3 Aileron left
+# @output AUX4 Aileron right
+# @output AUX5 Elevator
+#
+# @board px4_fmu-v2 exclude
+# @board bitcraze_crazyflie exclude
+#
+
+. ${R}etc/init.d/rc.vtol_defaults
+
+
+param set-default PWM_MAIN_RATE 400
+
+param set-default VT_IDLE_PWM_MC 1100
+param set-default VT_TYPE 1
+param set-default VT_MOT_ID 1234
+param set-default VT_FW_MOT_OFFID 24
+set MAV_TYPE 21
+
+set MIXER a14m_main
+set MIXER_AUX a14m_aux
+
+set PWM_OUT 1234
+

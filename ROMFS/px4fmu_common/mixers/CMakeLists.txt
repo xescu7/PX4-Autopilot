@@ -32,6 +32,8 @@
 ############################################################################
 
 px4_add_romfs_files(
+	a14m_aux.aux.main
+	a14m_main.main.mix
 	AAERTWF.main.mix
 	AAVVTWFF.main.mix
 	AAVVTWFF_vtail.main.mix
