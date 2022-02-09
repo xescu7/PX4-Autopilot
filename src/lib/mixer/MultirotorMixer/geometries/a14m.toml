@@ -14,7 +14,7 @@ name      = "front_right"
 # position  = [0.782918, 0.622776, 0.0]
 position  = [0.707107, 0.707107, 0.0]
 direction = "CW"
-#Ct        = 1.5
+# Ct        = 1.5
 
 [[rotors]]
 name      = "rear_left"
@@ -27,7 +27,7 @@ name     = "front_left"
 # position = [0.782918, -0.622776, 0.0]
 position  = [0.707107, -0.707107, 0.0]
 direction = "CCW"
-#Ct        = 1.5
+# Ct        = 1.5
 
 [[rotors]]
 name     = "rear_right"
