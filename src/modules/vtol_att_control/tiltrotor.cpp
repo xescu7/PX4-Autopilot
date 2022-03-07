@@ -309,7 +309,8 @@ void Tiltrotor::update_transition_state()
 
 		// at low speeds give full weight to MC
 		_mc_roll_weight = 1.0f;
-		_mc_yaw_weight = 1.0f;
+		// _mc_yaw_weight = 1.0f;
+		_mc_yaw_weight = 1.0f;		// Edit by AldoraTech for no control of yaw on transitions due to parasite yaw
 
 		// reduce MC controls once the plane has picked up speed
 		if (!_params->airspeed_disabled && PX4_ISFINITE(_airspeed_validated->calibrated_airspeed_m_s) &&
