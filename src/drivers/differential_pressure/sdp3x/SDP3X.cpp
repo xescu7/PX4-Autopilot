@@ -72,13 +72,14 @@ SDP3X::init_sdp3x()
 int
 SDP3X::configure()
 {
-
+	// ALDORATECH Added Stop signal (from master)
 	int ret = write_command(SDP3X_CONT_MODE_STOP);
 
 	if (ret == PX4_OK) {
 		px4_udelay(500); // SDP3X is unresponsive for 500us after stop continuous measurement command
 		ret = write_command(SDP3X_CONT_MEAS_AVG_MODE);
 	}
+	// ALDORATECH
 
 	if (ret != PX4_OK) {
 		perf_count(_comms_errors);
