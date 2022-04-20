@@ -1701,9 +1701,23 @@ Mavlink::configure_streams_to_default(const char *configure_single_stream)
 
 	case MAVLINK_MODE_MAGIC:
 
-	/* fallthrough */
+	/* fallthrough */ // ALDORATECH edit: no
+		break;	  // ALDORATECH edit: added this
 	case MAVLINK_MODE_CUSTOM:
-		//stream nothing
+	// ALDORATECH edit: Added this messages for custom mavlink streams
+		configure_stream_local("ADSB_VEHICLE", unlimited_rate);
+		configure_stream_local("ALTITUDE", 5.0f);
+		configure_stream_local("ATTITUDE", 15.0f);
+		configure_stream_local("BATTERY_STATUS", 3.0f);
+		configure_stream_local("EXTENDED_SYS_STATE", 3.0f);
+		configure_stream_local("GLOBAL_POSITION_INT", 5.0f);
+		configure_stream_local("HOME_POSITION", 1.0f);
+		configure_stream_local("PING", 0.1f);
+		configure_stream_local("RC_CHANNELS", 5.0f);
+		configure_stream_local("SERVO_OUTPUT_RAW_0", 3.0f);
+		configure_stream_local("SERVO_OUTPUT_RAW_1", 3.0f);
+		configure_stream_local("SYS_STATUS", 5.0f);
+		configure_stream_local("VFR_HUD", 5.0f);
 		break;
 
 	case MAVLINK_MODE_CONFIG: // USB
