@@ -66,35 +66,78 @@ public:
 private:
 	explicit MavlinkStreamServoOutputRaw(Mavlink *mavlink) : MavlinkStream(mavlink) {}
 
-	uORB::Subscription _act_sub{ORB_ID(actuator_outputs), N};
+	// ALDORATECH edit: commented and rewrited this part
+	// uORB::Subscription _act_sub{ORB_ID(actuator_outputs), N};
+
+	// bool send() override
+	// {
+	// 	actuator_outputs_s act;
+
+	// 	if (_act_sub.update(&act)) {
+	// 		mavlink_servo_output_raw_t msg{};
+
+	// 		static_assert(sizeof(act.output) / sizeof(act.output[0]) >= 16, "mavlink message requires at least 16 outputs");
+
+	// 		msg.time_usec = act.timestamp;
+	// 		msg.port = N;
+	// 		msg.servo1_raw = act.output[0];
+	// 		msg.servo2_raw = act.output[1];
+	// 		msg.servo3_raw = act.output[2];
+	// 		msg.servo4_raw = act.output[3];
+	// 		msg.servo5_raw = act.output[4];
+	// 		msg.servo6_raw = act.output[5];
+	// 		msg.servo7_raw = act.output[6];
+	// 		msg.servo8_raw = act.output[7];
+	// 		msg.servo9_raw = act.output[8];
+	// 		msg.servo10_raw = act.output[9];
+	// 		msg.servo11_raw = act.output[10];
+	// 		msg.servo12_raw = act.output[11];
+	// 		msg.servo13_raw = act.output[12];
+	// 		msg.servo14_raw = act.output[13];
+	// 		msg.servo15_raw = act.output[14];
+	// 		msg.servo16_raw = act.output[15];
+
+	// 		mavlink_msg_servo_output_raw_send_struct(_mavlink->get_channel(), &msg);
+
+	// 		return true;
+	// 	}
+
+	// 	return false;
+	// }
+
+	// This way all Mains (8) and Auxs (6) are sent via the same message
+	uORB::Subscription _act_sub_0{ORB_ID(actuator_outputs), 0};
+	uORB::Subscription _act_sub_1{ORB_ID(actuator_outputs), 1};
 
 	bool send() override
 	{
-		actuator_outputs_s act;
+		actuator_outputs_s actMain;
+		actuator_outputs_s actAux;
 
-		if (_act_sub.update(&act)) {
+		if (_act_sub_0.update(&actMain) && _act_sub_1.update(&actAux)) {
 			mavlink_servo_output_raw_t msg{};
 
-			static_assert(sizeof(act.output) / sizeof(act.output[0]) >= 16, "mavlink message requires at least 16 outputs");
+			static_assert(sizeof(actMain.output) / sizeof(actMain.output[0]) >= 16, "mavlink message requires at least 16 outputs");
+			static_assert(sizeof(actAux.output) / sizeof(actAux.output[0]) >= 16, "mavlink message requires at least 16 outputs");
 
-			msg.time_usec = act.timestamp;
-			msg.port = N;
-			msg.servo1_raw = act.output[0];
-			msg.servo2_raw = act.output[1];
-			msg.servo3_raw = act.output[2];
-			msg.servo4_raw = act.output[3];
-			msg.servo5_raw = act.output[4];
-			msg.servo6_raw = act.output[5];
-			msg.servo7_raw = act.output[6];
-			msg.servo8_raw = act.output[7];
-			msg.servo9_raw = act.output[8];
-			msg.servo10_raw = act.output[9];
-			msg.servo11_raw = act.output[10];
-			msg.servo12_raw = act.output[11];
-			msg.servo13_raw = act.output[12];
-			msg.servo14_raw = act.output[13];
-			msg.servo15_raw = act.output[14];
-			msg.servo16_raw = act.output[15];
+			msg.time_usec = actMain.timestamp;
+			msg.port = 0;
+			msg.servo1_raw = actMain.output[0];
+			msg.servo2_raw = actMain.output[1];
+			msg.servo3_raw = actMain.output[2];
+			msg.servo4_raw = actMain.output[3];
+			msg.servo5_raw = actMain.output[4];
+			msg.servo6_raw = actMain.output[5];
+			msg.servo7_raw = actMain.output[6];
+			msg.servo8_raw = actMain.output[7];
+			msg.servo9_raw = actAux.output[0];
+			msg.servo10_raw = actAux.output[1];
+			msg.servo11_raw = actAux.output[2];
+			msg.servo12_raw = actAux.output[3];
+			msg.servo13_raw = actAux.output[4];
+			msg.servo14_raw = actAux.output[5];
+			msg.servo15_raw = actMain.output[14];
+			msg.servo16_raw = actMain.output[15];
 
 			mavlink_msg_servo_output_raw_send_struct(_mavlink->get_channel(), &msg);
 
