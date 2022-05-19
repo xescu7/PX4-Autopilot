@@ -33,6 +33,7 @@
 
 set(geometry_files
 	a14m.toml
+	a14f.toml
 	dodeca_bottom_cox.toml
 	dodeca_top_cox.toml
 	hex_cox.toml

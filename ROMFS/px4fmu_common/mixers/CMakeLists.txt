@@ -34,5 +34,7 @@
 px4_add_romfs_files(
 	a14m_aux.aux.mix
 	a14m_main.main.mix
-
+	a14f_main.main.mix
+	a14f_aux.aux.mix
+	hexa_x.main.mix
 )
