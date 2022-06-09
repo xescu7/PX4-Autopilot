@@ -1719,6 +1719,9 @@ Mavlink::configure_streams_to_default(const char *configure_single_stream)
 		configure_stream_local("SERVO_OUTPUT_RAW_1", 3.0f);
 		configure_stream_local("SYS_STATUS", 5.0f);
 		configure_stream_local("VFR_HUD", 5.0f);
+		configure_stream_local("GPS_GLOBAL_ORIGIN", 0.1f);
+		configure_stream_local("GPS_RAW_INT", 5.0f);
+		configure_stream_local("GPS_STATUS", 5.0f);
 		break;
 
 	case MAVLINK_MODE_CONFIG: // USB

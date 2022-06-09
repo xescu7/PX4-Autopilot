@@ -1,8 +1,8 @@
 # A14M configuration
 
 [info]
-key = "a14m"
-description = "A14M configuration"
+key = "a14f"
+description = "A14F configuration"
 
 [rotor_default]
 axis      = [0.0, 0.0, -1.0]
