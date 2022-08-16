@@ -34,29 +34,28 @@ param set-default BAT1_V_DIV 19.229450225830078
 param set-default BAT1_V_EMPTY 3.2
 param set-default BAT1_V_LOAD_DROP 0.5
 
-# EKF2 airspeed params
-param set-default EKF2_ARSP_THR 16 # lower than stall speed, ideally 90% of it
+param set-default EKF2_ARSP_THR 16
 param set-default EKF2_ASPD_MAX 30
 param set-default EKF2_FUSE_BETA 1
 
-# Mavlink mode
-param set-default MAV_0_MODE 1 # custom
+param set-default MAV_0_MODE 1
 param set-default MAV_TYPE 22
 
-# Mission params
-param set-default MIS_DIST_WPS 1000 # Max dist between wps
+param set-default MIS_DIST_WPS 1000
 param set-default MIS_TAKEOFF_ALT 20
 param set-default MIS_YAW_TMT 10
 param set-default MPC_YAW_MODE 4
-# param set-default
-# param set-default
-# param set-default
 
+param set-default PWM_AUX_OUT 1234
+param set-default PWM_AUX_RATE 400
+param set-default PWM_AUX_DISARM 900
 
+param set-default PWM_MAIN_RATE 400
+param set-default PWM_MAIN_OUT 67
 
-
-
-
+param set-default VT_MC_ON_FMU 1
+param set-default VT_MOT_ID 1234
+param set-default VT_FW_MOT_OFFID 1234
 
 
 # param set-default MPC_ACC_HOR_MAX 2
@@ -74,16 +73,6 @@ param set-default MPC_YAW_MODE 4
 # param set-default RTL_TYPE 1
 
 
-# Outputs
-param set-default PWM_AUX_OUT 1234
-param set-default PWM_AUX_RATE 400
-
-param set-default PWM_MAIN_RATE 400
-param set-default PWM_MAIN_OUT 0
-
-param set-default VT_MC_ON_FMU 1
-param set-default VT_MOT_ID 1234
-param set-default VT_FW_MOT_OFFID 1234
 
 # param set-default MC_ROLL_P 6
 # param set-default MC_ROLLRATE_P 0.17
