@@ -81,7 +81,7 @@ param set-default PWM_AUX_RATE 400
 param set-default PWM_MAIN_RATE 400
 param set-default PWM_MAIN_OUT 0
 
-param set-default VT_MC_ON_FMU  1
+param set-default VT_MC_ON_FMU 1
 param set-default VT_MOT_ID 1234
 param set-default VT_FW_MOT_OFFID 1234
 
