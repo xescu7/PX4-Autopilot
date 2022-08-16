@@ -1,0 +1,119 @@
+#!/bin/sh
+#
+# @name AldoraTech A19M
+#
+# @type Standard VTOL
+# @class VTOL
+#
+# @maintainer Francesc Viaplana <francesc.viaplana@aldoratech.com>
+#
+# @output MAIN1 Aileron Left
+# @output MAIN2 Aileron Right
+# @output MAIN3 Elevator
+# @output MAIN4 Rudder Left
+# @output MAIN5 Rudder Right
+# @output MAIN6 Cruise Motor Left
+# @output MAIN4 Cruise Motor Right
+# @output AUX1 MC Motor Front-Right
+# @output AUX2 MC Motor Back-Left
+# @output AUX3 MC Motor Front-Left
+# @output AUX4 MC Motor Back-Right
+#
+# @board px4_fmu-v2 exclude
+#
+
+
+# Airpseed params
+
+param set-default ASPD_FS_T_START 1
+
+param set-default BAT1_A_PER_V 65.2252426147461
+param set-default BAT1_CAPACITY 16000
+param set-default BAT1_N_CELLS 6
+param set-default BAT1_V_DIV 19.229450225830078
+param set-default BAT1_V_EMPTY 3.2
+param set-default BAT1_V_LOAD_DROP 0.5
+
+# EKF2 airspeed params
+param set-default EKF2_ARSP_THR 16 # lower than stall speed, ideally 90% of it
+param set-default EKF2_ASPD_MAX 30
+param set-default EKF2_FUSE_BETA 1
+
+# Mavlink mode
+param set-default MAV_0_MODE 1 # custom
+param set-default MAV_TYPE 22
+
+# Mission params
+param set-default MIS_DIST_WPS 1000 # Max dist between wps
+param set-default MIS_TAKEOFF_ALT 20
+param set-default MIS_YAW_TMT 10
+param set-default MPC_YAW_MODE 4
+# param set-default
+# param set-default
+# param set-default
+
+
+
+
+
+
+
+
+# param set-default MPC_ACC_HOR_MAX 2
+# param set-default MPC_TKO_SPEED 1
+# param set-default MPC_VEL_MANUAL 3
+# param set-default MPC_XY_CRUISE 3
+# param set-default MPC_XY_ERR_MAX 5
+# param set-default MPC_XY_VEL_MAX 4
+# param set-default MPC_Z_VEL_MAX_DN 1.5
+# param set-default MPC_JERK_MAX 4.5
+# param set-default MPC_YAW_MODE 4
+
+# param set-default NAV_ACC_RAD 3
+
+# param set-default RTL_TYPE 1
+
+
+# Outputs
+param set-default PWM_AUX_OUT 1234
+param set-default PWM_AUX_RATE 400
+
+param set-default PWM_MAIN_RATE 400
+param set-default PWM_MAIN_OUT 0
+
+param set-default VT_MC_ON_FMU  1
+param set-default VT_MOT_ID 1234
+param set-default VT_FW_MOT_OFFID 1234
+
+# param set-default MC_ROLL_P 6
+# param set-default MC_ROLLRATE_P 0.17
+# param set-default MC_ROLLRATE_I 0.002
+# param set-default MC_ROLLRATE_D 0.004
+# param set-default MC_PITCH_P 6
+# param set-default MC_PITCHRATE_P 0.19
+# param set-default MC_PITCHRATE_I 0.002
+# param set-default MC_PITCHRATE_D 0.004
+# param set-default MC_YAWRATE_P 0.22
+# param set-default MC_YAWRATE_I 0.02
+# param set-default MC_YAWRATE_MAX 40
+
+# param set-default MPC_YAWRAUTO_MAX 40
+
+# param set-default FW_PR_I 0.02
+# param set-default FW_RR_FF 0.6
+# param set-default FW_RR_I 0.01
+param set-default FW_THR_CRUISE 0.6
+
+param set-default VT_ARSP_BLEND 18
+param set-default VT_ARSP_TRANS 23
+param set-default VT_F_TRANS_THR 1.0
+param set-default VT_IDLE_PWM_MC 1100
+param set-default VT_TYPE 2
+
+set VEHICLE_TYPE vtol
+set MAV_TYPE 22
+
+set MIXER a19m_main
+set MIXER_AUX a19m_aux
+
+set PWM_AUX_OUT 1234
