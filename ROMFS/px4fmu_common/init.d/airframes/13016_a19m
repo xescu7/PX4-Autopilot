@@ -23,100 +23,11 @@
 #
 
 
-# Airpseed params
 
-param set-default ASPD_FS_T_START 1
-
-param set-default BAT1_A_PER_V 65.2252426147461
-param set-default BAT1_CAPACITY 16000
-param set-default BAT1_N_CELLS 6
-param set-default BAT1_V_DIV 19.229450225830078
-param set-default BAT1_V_EMPTY 3.2
-param set-default BAT1_V_LOAD_DROP 0.5
-
-param set-default EKF2_ARSP_THR 16
-param set-default EKF2_ASPD_MAX 30
-param set-default EKF2_FUSE_BETA 1
-
-param set-default MAV_0_MODE 1
-param set-default MAV_TYPE 22
-
-param set-default MIS_DIST_WPS 1000
-param set-default MIS_TAKEOFF_ALT 20
-param set-default MIS_YAW_TMT 10
-param set-default MPC_YAW_MODE 4
-param set-default NAV_ACC_RAD 3
-param set-default NAV_LOITER_RAD 500
-param set-default NAV_TRAFF_AVOID 0
-
-
-
-param set-default PWM_AUX_OUT 1234
-param set-default PWM_AUX_RATE 400
-param set-default PWM_AUX_DISARM 900
-
-param set-default PWM_MAIN_RATE 400
-param set-default PWM_MAIN_OUT 67
-
-param set-default VT_MC_ON_FMU 1
-param set-default VT_MOT_ID 1234
-param set-default VT_FW_MOT_OFFID 1234
-
-
-param set-default MPC_ACC_HOR_MAX 2
-param set-default MPC_ACC_HOR 2
-param set-default MPC_ACC_DOWN_MAX 2
-param set-default MPC_ACC_UP_MAX 2
-param set-default MPC_JERK_MAX 4
-param set-default MPC_JERK_AUTO 3
-param set-default MPC_LAND_ALT1 5
-param set-default MPC_LAND_ALT2 2
-param set-default MPC_LAND_SPEED 0.6
-param set-default MPC_POS_MODE 3
-param set-default MPC_THR_MIN 0.05
-param set-default MPC_TKO_SPEED 1
-param set-default MPC_VEL_MANUAL 3
-param set-default MPC_XY_CRUISE 3
-param set-default MPC_XY_ERR_MAX 5
-param set-default MPC_XY_VEL_MAX 4
-param set-default MPC_Z_VEL_MAX_DN 1.5
-
-param set-default UAVCAN_ENABLE 2
-
-# param set-default RTL_TYPE 1
-
-
-
-# param set-default MC_ROLL_P 6
-# param set-default MC_ROLLRATE_P 0.17
-# param set-default MC_ROLLRATE_I 0.002
-# param set-default MC_ROLLRATE_D 0.004
-# param set-default MC_PITCH_P 6
-# param set-default MC_PITCHRATE_P 0.19
-# param set-default MC_PITCHRATE_I 0.002
-# param set-default MC_PITCHRATE_D 0.004
-# param set-default MC_YAWRATE_P 0.22
-# param set-default MC_YAWRATE_I 0.02
-# param set-default MC_YAWRATE_MAX 40
-
-# param set-default MPC_YAWRAUTO_MAX 40
-
-# param set-default FW_PR_I 0.02
-# param set-default FW_RR_FF 0.6
-# param set-default FW_RR_I 0.01
-
-param set-default FW_THR_CRUISE 0.6
-
-param set-default VT_ARSP_BLEND 18
-param set-default VT_ARSP_TRANS 23
-param set-default VT_F_TRANS_THR 1.0
-param set-default VT_IDLE_PWM_MC 1100
-param set-default VT_TYPE 2
-
-set VEHICLE_TYPE vtol
 set MAV_TYPE 22
+set PWM_AUX_OUT 1234
+set PWM_OUT 67
 
 set MIXER a19m_main
 set MIXER_AUX a19m_aux
 
-set PWM_AUX_OUT 1234

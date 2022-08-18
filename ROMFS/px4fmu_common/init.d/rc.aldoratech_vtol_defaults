@@ -1,0 +1,347 @@
+#!/bin/sh
+#
+# Aldoratech VTOLs default parameters.
+#
+# NOTE: Script variables are declared/initialized/unset in the rcS script.
+#
+# Some parameters are defined with it's already default value but are
+# write here due to its relevance and for possible future modifications.
+#
+# Only the vtol default non-model dependant parameters are listed here.
+
+set VEHICLE_TYPE vtol
+
+# Airspeed params
+
+# Enable checks on airspeed sensors.
+param set-default ASPD_DO_CHECKS 1
+
+# Enable fallback to sensor-less airspeed estimation. We only want airspeed data so it's disabled.
+param set-default ASPD_FALLBACK_GW 0
+
+# Airspeed failsafe start delay. If airspeed lost and recovered, wait 1s having good data to start using it again.
+param set-default ASPD_FS_T_START 1
+
+# Airspeed failsafe stop delay. If airspeed has bad data wait 2 seconds before stop using it.
+param set-default ASPD_FS_T_STOP 2
+
+# Index or primary airspeed measurement source.
+# Values:
+#     -1: Disabled
+#     0: Groundspeed minus windspeed
+#     1: First airspeed sensor
+#     2: Second airspeed sensor
+#     3: Third airspeed sensor
+param set-default ASPD_PRIMARY 1
+
+
+# Airspeed scale (scale from IAS to CAS). Set to 1.15 for empiric data but need to be calibrated
+param set-default ASPD_SCALE 1.15 # MOVE TO SPECIFIC
+
+
+# Battery params
+
+# Battery 1 current per volt (A/V). Need to be calibrated to adjust
+param set-default BAT1_A_PER_V 65.2252426147461 # MOVE TO SPECIFIC
+
+# Battery 1 voltage divider (V divider). Need to be calibrated to adjust
+param set-default BAT1_V_DIV 19.229450225830078 # MOVE TO SPECIFIC
+
+# Capacity in mAh
+param set-default BAT1_CAPACITY 16000 # MOVE TO SPECIFIC
+
+param set-default BAT1_N_CELLS 6 # MOVE TO SPECIFIC
+
+# For now set deactivated. Need to test if it's better than BAT1_V_LOAD_DROP
+param set-default BAT1_R_INTERNAL -1.0 # MOVE TO SPECIFIC (???)
+
+# Battery 1 monitoring source
+# Comment: This parameter controls the source of battery data. The value 'Power Module' means that measurements are expected to come from a power module. If the value is set to 'External' then the system expects to receive mavlink battery status messages. If the value is set to 'ESCs', the battery information are taken from the esc_status message. This requires the ESC to provide both voltage as well as current.
+# Values:
+#     -1: Disabled
+#     0: Power Module
+#     1: External
+#     2: ESCs
+# For now is set to Power module. Maybe in the future we'll implement it via mavlink (external)
+param set-default BAT1_SOURCE 0 # MOVE TO SPECIFIC
+
+# Full cell voltage (5C load). Not tested, is the default value, it'll need to be tested in the future.
+param set-default BAT1_V_CHARGED 4.05 # MOVE TO SPECIFIC
+
+# Empty cell voltage (5C load). Not tested, is the default value, it'll need to be tested in the future.
+param set-default BAT1_V_EMPTY 3.2 # MOVE TO SPECIFIC
+
+# Voltage drop per cell on full throttle. Set to it's maximum value but not tested.
+param set-default BAT1_V_LOAD_DROP 0.5 # MOVE TO SPECIFIC
+
+# Thresholds for emergency, critical and low battery levels
+param set-default BAT_EMERGEN_THR 0.08
+param set-default BAT_CRIT_THR 0.1
+param set-default BAT_LOW_THR 0.2
+
+# Required number of redundant power modules.
+param set-default COM_POWER_COUNT 1 # MOVE TO SPECIFIC
+
+
+# Commander params
+
+# Enable preflight check for maximal allowed airspeed when arming.
+# Comment: Deny arming if the current airspeed measurement is greater than half the cruise airspeed (FW_AIRSPD_TRIM).
+# Set to enabled to avoid arming with bad airspeed data.
+param set-default COM_ARM_ARSP_EN 1
+
+# Require valid mission to arm.
+# Disabled for now but may be enabled in the future.
+param set-default COM_ARM_MIS_REQ 0
+
+# Enable FMU SD card detection check
+# Values:
+#     0: Disabled
+#     1: Warning only
+#     2: Enforce SD card presence
+# Enforce SD card. It can be changed if necessary on testing
+param set-default COM_ARM_SDCARD 2
+
+# Arm switch is a momentary button
+# Comment: 0: Arming/disarming triggers on switch transition. 1: Arming/disarming triggers when holding the momentary button down for COM_RC_ARM_HYST like the stick gesture.
+# Default for now. May be changed in the future.
+param set-default COM_ARM_SWISBTN 0
+
+# Related to above. Value in ms.
+param set-default COM_RC_ARM_HYST 1000
+
+# Allow arming without GPS
+# Values:
+#     0: Require GPS lock to arm
+#     1: Allow arming without GPS
+# Enforce GPS lock for arming. Deactivate for testing
+param set-default COM_ARM_WO_GPS 0
+
+# Time-out for auto disarm after landing.
+# Set to default 2s
+param set-default COM_DISARM_LAND 2.0
+
+# Time-out for auto disarm if not taking off.
+# Set to default 10s
+param set-default COM_DISARM_PRFLT 10.0
+
+
+# Failsaves
+
+# Datalink loss time threshold in seconds.
+# Set to 5s as th 10s default seems very large
+param set-default COM_DL_LOSS_T 5.0
+
+# Set data link loss failsafe mode
+# Values:
+#     0: Disabled
+#     1: Hold mode
+#     2: Return mode
+#     3: Land mode
+#     5: Terminate
+#     6: Lockdown
+# This failsafe is only triggered in mission mode so it's safe to assume that Return mode will work correctly.
+param set-default NAV_DLL_ACT 2
+
+# Battery failsafe mode
+# Values:
+#     0: Warning
+#     2: Land mode
+#     3: Return at critical level, land at emergency level
+# Set to only warning since the battery monitoring still needs to be tested
+param set-default COM_LOW_BAT_ACT 0
+
+# RC loss time threshold.
+# Set to default 0.5s
+param set-default COM_RC_LOSS_T 0.5
+
+# Delay between RC loss and configured reaction
+# During this time the vehicle will stay in HOLD mode waiting for regaining signal.
+param set-default COM_RCL_ACT_T 10.0
+
+# Set RC loss failsafe mode
+# Values:
+#     1: Hold mode
+#     2: Return mode
+#     3: Land mode
+#     5: Terminate
+#     6: Lockdown
+# If it can't be in Return for other reasons, it will automatically switch to Land or Terminate
+param set-default NAV_RCL_ACT 2
+
+# RC loss exceptions
+# Comment: Specify modes in which RC loss is ignored and the failsafe action not triggered.
+# Bitmask:
+#     1: Mission
+#     2: Hold
+#     4: Offboard
+# No exceptions for now
+param set-default COM_RCL_EXCEPT 0
+
+# Position control navigation loss response (GPS)
+# Values:
+#     0: Altitude/Manual. Assume use of remote control after fallback. Switch to Altitude mode if a height estimate is available, else switch to MANUAL.
+#     1: Land/Terminate. Assume no use of remote control after fallback. Switch to Land mode if a height estimate is available, else switch to TERMINATION.
+# For now the vehicle will always have radio link. In the future it will be set to 1.
+param set-default COM_POSCTL_NAVL 0
+
+
+# Enable RC stick override of auto and/or offboard modes
+# Comment: When RC stick override is enabled, moving the RC sticks more than COM_RC_STICK_OV from their center position immediately gives control back to the pilot by switching to Position mode. Note: Only has an effect on multicopters, and VTOLs in multicopter mode.
+# Bitmask:
+#     1: Enable override during auto modes (except for in critical battery reaction)
+#     2: Enable override during offboard mode
+#     4: Ignore throttle stick
+# Override in auto or offboard modes, don't ignore the throttle stick.
+param set-default COM_RC_OVERRIDE 3
+
+
+# EKF params
+param set-default EKF2_ARSP_THR 16
+param set-default EKF2_ASPD_MAX 30
+param set-default EKF2_FUSE_BETA 1
+param set-default EKF2_MULTI_IMU 3
+param set-default EKF2_MULTI_MAG 3
+
+# Fixed Wing params
+param set-default FW_ARSP_MODE 1
+param set-default FW_MAN_P_MAX 30
+param set-default FW_MAN_R_MAX 30
+param set-default FW_PR_FF
+param set-default FW_PR_P
+param set-default FW_PR_I
+param set-default FW_PR_IMAX
+param set-default FW_PSP_OFF
+param set-default FW_P_RMAX_NEG
+param set-default FW_P_RMAX_POS
+param set-default FW_RR_FF
+param set-default FW_RR_P
+param set-default FW_RR_I
+param set-default FW_RR_IMAX
+param set-default FW_R_RMAX
+param set-default FW_YR_FF
+param set-default FW_YR_P
+param set-default FW_YR_I
+param set-default FW_YR_IMAX
+param set-default FW_Y_RMAX
+param set-default FW_L1_PERIOD 40
+param set-default FW_P_LIM_MAX
+param set-default FW_P_LIM_MIN
+param set-default FW_R_LIM
+param set-default FW_THR_CRUISE
+param set-default FW_THR_IDLE
+param set-default FW_THR_MAX
+param set-default FW_THR_MIN
+param set-default FW_AIRSPD_MAX
+param set-default FW_AIRSPD_MIN
+param set-default FW_AIRSPD_STALL
+param set-default FW_AIRSPD_TRIM
+param set-default FW_GND_SPD_MIN
+param set-default FW_T_CLMB_MAX
+param set-default FW_T_CLMB_R_SP
+param set-default FW_T_HRATE_FF
+param set-default FW_T_SINK_MAX
+param set-default FW_T_SINK_MIN
+param set-default FW_T_SINK_R_SP
+
+# Geofence params
+param set-default GF_ACTION 3
+
+# Mavlink params
+param set-default MAV_0_BROADCAST 1
+param set-default MAV_0_CONFIG 101
+param set-default MAV_0_FORWARD 1
+param set-default MAV_0_MODE 1
+param set-default MAV_TYPE 22
+
+# Mission params
+param set-default MIS_DIST_1WP 1000
+param set-default MIS_DIST_WPS 1000
+param set-default MIS_TAKEOFF_ALT 20
+param set-default MIS_YAW_TMT 10
+param set-default MPC_YAW_MODE 4
+param set-default NAV_ACC_RAD 3
+param set-default NAV_FORCE_VT 1
+param set-default NAV_FW_ALT_RAD 10.0
+param set-default NAV_LOITER_RAD 500
+param set-default NAV_MC_ALT_RAD 1.0
+param set-default NAV_TRAFF_AVOID 0
+
+# Multi-copter params
+param set-default MC_AIRMODE 1
+param set-default MC_PITCHRATE_MAX
+param set-default MC_PITCH_P
+param set-default MC_ROLLRATE_MAX
+param set-default MC_ROLL_P
+param set-default MC_YAWRATE_MAX
+param set-default MC_YAW_P
+param set-default MPC_YAWRAUTO_MAX
+param set-default MPC_ALT_MODE 0
+param set-default MPC_ACC_HOR_MAX 2
+param set-default MPC_ACC_HOR 2
+param set-default MPC_ACC_DOWN_MAX 2
+param set-default MPC_ACC_UP_MAX 2
+param set-default MPC_JERK_MAX 4
+param set-default MPC_JERK_AUTO 4
+param set-default MPC_LAND_ALT1 5
+param set-default MPC_LAND_ALT2 2
+param set-default MPC_LAND_SPEED 0.6
+param set-default MPC_POS_MODE 3
+param set-default MPC_VEL_MANUAL 3
+param set-default MPC_XY_CRUISE 3
+param set-default MPC_XY_ERR_MAX 5
+param set-default MPC_XY_VEL_MAX 4
+param set-default MPC_Z_VEL_MAX_DN 1.5
+param set-default MPC_Z_VEL_MAX_UP 3.0
+param set-default MPC_MANTHR_MIN 0.05
+param set-default MPC_MAN_TILT_MAX
+param set-default MPC_MAN_Y_MAX
+param set-default MPC_THR_CURVE
+param set-default MPC_THR_HOVER
+param set-default MPC_THR_MAX 1.0
+param set-default MPC_THR_MIN 0.05
+param set-default MPC_TILTMAX_AIR
+param set-default MPC_TILTMAX_LND
+param set-default MPC_TKO_RAMP_T
+param set-default MPC_TKO_SPEED 1
+# Falten tots els parametres de PID
+
+# Model specific -> move and add others
+param set-default PWM_AUX_OUT 1234
+param set-default PWM_AUX_RATE 400
+param set-default PWM_AUX_DISARM 900
+param set-default PWM_MAIN_RATE 400
+param set-default PWM_MAIN_OUT 67
+
+# RC params
+param set-default RC_MAP_ARM_SW
+param set-default RC_MAP_FLTMODE
+param set-default RC_MAP_KILL_SW
+param set-default RC_MAP_TRANS_SW
+
+# Add RTL params
+# Add sdlog params
+# Add VTOL params
+
+param set-default VT_MC_ON_FMU 1
+param set-default VT_MOT_ID 1234
+param set-default VT_FW_MOT_OFFID 1234
+
+
+
+
+param set-default UAVCAN_ENABLE 2
+
+param set-default RTL_TYPE 1
+
+param set-default MC_YAWRATE_MAX 40
+
+param set-default MPC_YAWRAUTO_MAX 40
+
+param set-default FW_THR_CRUISE 0.6
+
+param set-default VT_ARSP_BLEND 18
+param set-default VT_ARSP_TRANS 23
+param set-default VT_F_TRANS_THR 1.0
+param set-default VT_IDLE_PWM_MC 1100
+param set-default VT_TYPE 2
