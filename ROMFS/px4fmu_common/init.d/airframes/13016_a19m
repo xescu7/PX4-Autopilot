@@ -7,26 +7,27 @@
 #
 # @maintainer Francesc Viaplana <francesc.viaplana@aldoratech.com>
 #
-# @output MAIN1 Aileron Left
-# @output MAIN2 Aileron Right
-# @output MAIN3 Elevator
-# @output MAIN4 Rudder Left
-# @output MAIN5 Rudder Right
-# @output MAIN6 Cruise Motor Left
-# @output MAIN4 Cruise Motor Right
-# @output AUX1 MC Motor Front-Right
-# @output AUX2 MC Motor Back-Left
-# @output AUX3 MC Motor Front-Left
-# @output AUX4 MC Motor Back-Right
+# @output MAIN1 MC Motor Front-Right
+# @output MAIN2 MC Motor Back-Left
+# @output MAIN3 MC Motor Front-Left
+# @output MAIN4 MC Motor Back-Right
+# @output MAIN5 Cruise Motor Left
+# @output MAIN6 Cruise Motor Right
+# @output AUX1 Aileron Left
+# @output AUX2 Aileron Right
+# @output AUX3 Elevator
+# @output AUX4 Rudder Left
+# @output AUX5 Rudder Right
 #
 # @board px4_fmu-v2 exclude
 #
 
+. ${R}etc/init.d/rc.aldoratech_a19m_defaults
 
 
 set MAV_TYPE 22
-set PWM_AUX_OUT 1234
-set PWM_OUT 67
+set PWM_AUX_OUT 0
+set PWM_OUT 123456
 
 set MIXER a19m_main
 set MIXER_AUX a19m_aux
