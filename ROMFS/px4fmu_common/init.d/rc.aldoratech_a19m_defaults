@@ -1,13 +1,11 @@
 #!/bin/sh
 #
-# Aldoratech VTOLs default parameters.
+# Aldoratech A19M default parameters.
 #
 # NOTE: Script variables are declared/initialized/unset in the rcS script.
 #
 # Some parameters are defined with it's already default value but are
 # write here due to its relevance and for possible future modifications.
-#
-# Only the vtol default non-model dependant parameters are listed here.
 
 set VEHICLE_TYPE vtol
 
@@ -39,6 +37,15 @@ param set-default ASPD_PRIMARY 1
 
 # Airspeed scale (scale from IAS to CAS). Set to 1.15 for empiric data but need to be calibrated
 param set-default ASPD_SCALE 1.15
+
+# Airspeed mode: tube pressure drop
+param set-default CAL_AIR_CMODEL 1
+
+# Lenght of tubes of the pitot
+param set-default CAL_AIR_TUBELEN  0.16
+
+
+
 
 ##############################
 ####### Battery params #######
@@ -234,9 +241,9 @@ param set-default FW_PSP_OFF 0
 
 # Direct feed forward from pitch, roll and yaw rate setpoint to control surface output
 # Set to default values for now
-param set-default FW_PR_FF 0.5
-param set-default FW_RR_FF 0.5
-param set-default FW_YR_FF 0.3
+param set-default FW_PR_FF 0.4
+param set-default FW_RR_FF 0.25
+param set-default FW_YR_FF 0.15
 
 # Pitch, roll and yaw rate P, I and max I
 # Set to default values for now
@@ -258,7 +265,7 @@ param set-default FW_YR_IMAX 0.2
 param set-default FW_P_RMAX_NEG 30
 param set-default FW_P_RMAX_POS 30
 param set-default FW_R_RMAX 45
-param set-default FW_Y_RMAX 30
+param set-default FW_Y_RMAX 20
 
 
 # This is the L1 distance and defines the tracking point ahead of the aircraft its following.
@@ -576,13 +583,13 @@ param set-default PWM_MAIN_RATE 400
 param set-default RC_MAP_ARM_SW 5
 
 # Flight mode RC mapping
-param set-default RC_MAP_FLTMODE
+param set-default RC_MAP_FLTMODE 6
 
 # Kill Switch RC mapping
-param set-default RC_MAP_KILL_SW
+param set-default RC_MAP_KILL_SW 9
 
 # Transition switch RC mapping
-param set-default RC_MAP_TRANS_SW
+param set-default RC_MAP_TRANS_SW 7
 
 # Reverse RC 5 (arming switch) as it makes more easy and safe to arm and disarm the vehicle
 param set-default RC5_REV 1
@@ -619,7 +626,7 @@ param set-default RTL_RETURN_ALT 60
 
 # Airspeed at which we can start blending both fw and mc controls.
 # Set to the stall speed
-param set-default VT_ARSP_BLEND 18
+param set-default VT_ARSP_BLEND 15
 
 # Airspeed at which we can switch to fw mode
 param set-default VT_ARSP_TRANS 23
@@ -651,15 +658,15 @@ param set-default VT_FW_MOT_OFFID 1234
 
 # Throttle during transition.
 # Set to 100% but may be lowered if it's excessive
-param set-default VT_F_TRANS_THR 1.0
+param set-default VT_F_TRANS_THR 0.8
 
 # Defines the time window during which the pusher throttle will be ramped up linearly to VT_F_TRANS_THR during a transition to fixed wing mode.
 # Set to low value to fast transitions. May be tunned if the current spike is to high
 param set-default VT_PSHER_RMP_DT 2.0
 
 # Idle pwm for MC motors
-# Set to A14M min but needs to be calibrated on each vehicle.
-param set-default VT_IDLE_PWM_MC 1140
+# Needs to be calibrated on each vehicle.
+param set-default VT_IDLE_PWM_MC 1050
 
 # Motors used for MC
 param set-default VT_MOT_ID 1234
@@ -673,3 +680,9 @@ param set-default VT_TRANS_TIMEOUT 15.0
 #     1: Tiltrotor
 #     2: Standard
 param set-default VT_TYPE 2
+
+
+
+# OTHERS
+
+param set-default IMU_GYRO_RATEMAX 2000
