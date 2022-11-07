@@ -276,7 +276,7 @@ param set-default FW_L1_PERIOD 40
 # Set lower than default. Need to be calibrated
 param set-default FW_P_LIM_MAX 20
 param set-default FW_P_LIM_MIN -15
-param set-default FW_R_LIM 30
+param set-default FW_R_LIM 40
 
 # Max pitch in degrees for manual control in attitude stabilized mode
 # Don't set higher than FW_P_LIM_MAX/MIN
