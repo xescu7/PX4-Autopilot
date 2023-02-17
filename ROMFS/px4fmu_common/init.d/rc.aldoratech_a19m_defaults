@@ -36,7 +36,7 @@ param set-default ASPD_PRIMARY 1
 
 
 # Airspeed scale (scale from IAS to CAS). Set to 1.15 for empiric data but need to be calibrated
-param set-default ASPD_SCALE 1.15
+param set-default ASPD_SCALE 1
 
 # Airspeed mode: tube pressure drop
 param set-default CAL_AIR_CMODEL 1
@@ -241,9 +241,9 @@ param set-default FW_PSP_OFF 0
 
 # Direct feed forward from pitch, roll and yaw rate setpoint to control surface output
 # Set to default values for now
-param set-default FW_PR_FF 0.4
-param set-default FW_RR_FF 0.25
-param set-default FW_YR_FF 0.15
+param set-default FW_PR_FF 0.7
+param set-default FW_RR_FF 0.6
+param set-default FW_YR_FF 0.07
 
 # Pitch, roll and yaw rate P, I and max I
 # Set to default values for now
